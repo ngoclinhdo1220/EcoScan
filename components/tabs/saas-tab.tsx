@@ -510,11 +510,11 @@ export function SaasTab() {
             </div>
             <div className="h-80">
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={eprDataLocalized} layout="vertical" barSize={12}>
+                <BarChart data={eprDataLocalized} layout="vertical" barSize={10} margin={{ left: 0, right: 8, top: 4, bottom: 4 }}>
                   <CartesianGrid strokeDasharray="3 3" stroke="rgba(80,200,120,0.1)" />
-                  <XAxis type="number" tick={{ fontSize: 10, fill: "#4a5568" }} />
-                  <YAxis type="category" dataKey="brandLocalized" tick={{ fontSize: 10, fill: "#4a5568" }} width={90} />
-                  <Tooltip contentStyle={{ backgroundColor: "rgba(255,255,255,0.95)", border: "1px solid rgba(80,200,120,0.2)", borderRadius: "8px", fontSize: "12px" }} />
+                  <XAxis type="number" tick={{ fontSize: 8, fill: "#4a5568" }} />
+                  <YAxis type="category" dataKey="brandLocalized" tick={{ fontSize: 8, fill: "#4a5568" }} width={80} interval={0} />
+                  <Tooltip contentStyle={{ backgroundColor: "rgba(255,255,255,0.95)", border: "1px solid rgba(80,200,120,0.2)", borderRadius: "8px", fontSize: "11px" }} />
                   <Bar dataKey="value" radius={[0, 4, 4, 0]} name={lang === "vi" ? "S\u1ed1 l\u01b0\u1ee3ng thu gom" : "Items Collected"}>
                     {eprDataLocalized.map((_, index) => (
                       <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
@@ -533,15 +533,15 @@ export function SaasTab() {
                 {lang === "vi" ? "T\u1ef7 l\u1ec7 r\u00e1c th\u1ea3i theo ng\u00e0nh" : "Waste Market Share by Sector"}
               </h3>
             </div>
-            <div className="h-48">
+            <div className="h-56">
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
-                  <Pie data={sectorData} cx="50%" cy="50%" innerRadius={40} outerRadius={70} paddingAngle={3} dataKey="value" label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}>
+                  <Pie data={sectorData} cx="50%" cy="50%" innerRadius={35} outerRadius={60} paddingAngle={3} dataKey="value" label={({ x, y, name, percent, textAnchor }) => (<text x={x} y={y} textAnchor={textAnchor} dominantBaseline="central" style={{ fontSize: "7px", fill: "#4a5568", fontWeight: 500 }}>{`${name} ${(percent * 100).toFixed(0)}%`}</text>)}>
                     {sectorData.map((_, index) => (
                       <Cell key={`sec-${index}`} fill={COLORS[index % COLORS.length]} />
                     ))}
                   </Pie>
-                  <Tooltip contentStyle={{ backgroundColor: "rgba(255,255,255,0.95)", border: "1px solid rgba(80,200,120,0.2)", borderRadius: "8px", fontSize: "12px" }} />
+                  <Tooltip contentStyle={{ backgroundColor: "rgba(255,255,255,0.95)", border: "1px solid rgba(80,200,120,0.2)", borderRadius: "8px", fontSize: "11px" }} />
                 </PieChart>
               </ResponsiveContainer>
             </div>
@@ -599,13 +599,13 @@ export function SaasTab() {
             <div className="h-52">
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
-                  <Pie data={esgDataMap[lang]} cx="50%" cy="50%" innerRadius={50} outerRadius={80} paddingAngle={3} dataKey="value">
+                  <Pie data={esgDataMap[lang]} cx="50%" cy="50%" innerRadius={45} outerRadius={72} paddingAngle={3} dataKey="value">
                     {esgDataMap[lang].map((_, index) => (
                       <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                     ))}
                   </Pie>
-                  <Tooltip contentStyle={{ backgroundColor: "rgba(255,255,255,0.95)", border: "1px solid rgba(80,200,120,0.2)", borderRadius: "8px", fontSize: "12px" }} />
-                  <Legend wrapperStyle={{ fontSize: "10px" }} />
+                  <Tooltip contentStyle={{ backgroundColor: "rgba(255,255,255,0.95)", border: "1px solid rgba(80,200,120,0.2)", borderRadius: "8px", fontSize: "11px" }} />
+                  <Legend wrapperStyle={{ fontSize: "9px" }} />
                 </PieChart>
               </ResponsiveContainer>
             </div>

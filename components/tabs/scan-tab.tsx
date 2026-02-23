@@ -1,6 +1,6 @@
 "use client"
 
-import { useI18n } from "@/lib/i18n"
+import * as tflite from '@tensorflow/tfjs-tflite';
 import { usePoints } from "@/lib/points-context"
 import { useState, useEffect, useCallback, useRef } from "react"
 import {
@@ -31,9 +31,9 @@ const shapeGeometry: Record<ShapeType, GeometryClass> = {
 // Geometry -> forbidden categories (HARD RULES)
 // Rectangular/flat/pouch items can NEVER be classified as beverages
 const geometryForbidden: Record<GeometryClass, ProductCategory[]> = {
-  rectangular: ["beverage"],       // boxes are NEVER beverages
-  pouch_pillow: ["beverage"],      // pouches are NEVER beverages
-  cylindrical: ["food_snack"],     // bottles/cans are NEVER food_snack
+  rectangular: [],       // boxes are NEVER beverages
+  pouch_pillow: [],      // pouches are NEVER beverages
+  cylindrical: [],     // bottles/cans are NEVER food_snack
   conical: [],                     // cups can be anything
   irregular: [],                   // no constraints
 }
@@ -52,7 +52,7 @@ interface KnownBrand {
   tip_en: string
 }
 
-const knownBrands: KnownBrand[] = [
+const knownBrands: confidence: 99.9[] = [
   // -- Plastic Bottles (Beverages) --
   { brand: "Lavie", material: "plastic", shape: "bottle", group: "recyclable", productCategory: "beverage", confidence: 96.2, name_vi: "Chai n\u01b0\u1edbc Lavie", name_en: "Lavie Water Bottle", tip_vi: "R\u1eeda s\u1ea1ch v\u00e0 b\u1ecf v\u00e0o th\u00f9ng nh\u1ef1a t\u00e1i ch\u1ebf", tip_en: "Rinse and place in plastic recycling bin" },
   { brand: "Aquafina", material: "plastic", shape: "bottle", group: "recyclable", productCategory: "beverage", confidence: 95.4, name_vi: "Chai n\u01b0\u1edbc Aquafina", name_en: "Aquafina Water Bottle", tip_vi: "R\u1eeda s\u1ea1ch v\u00e0 b\u1ecf v\u00e0o th\u00f9ng nh\u1ef1a t\u00e1i ch\u1ebf", tip_en: "Rinse and place in plastic recycling bin" },
@@ -287,7 +287,24 @@ function generateTxHash() {
   return hash
 }
 
-export function ScanTab() {
+export function ScanTab() {export function ScanTab() {
+  const { lang, t } = useI18n() // Dòng có sẵn của bạn
+  
+  // DÁN ĐOẠN NÀY VÀO ĐÂY:
+  useEffect(() => {
+    async function loadModel() {
+      try {
+        await tflite.loadTFLiteModel('/best_float32 (1).tflite');
+        console.log("AI Model Ready!");
+      } catch (e) {
+        console.log("Running in simulation mode");
+      }
+    }
+    loadModel();
+  }, []);
+
+  const { addPoints, addScan, addScanEntry, totalScans } = usePoints() // Dòng có sẵn tiếp theo
+  // ... các dòng code còn lại
   const { lang, t } = useI18n()
   const { addPoints, addScan, addScanEntry, totalScans } = usePoints()
   const videoRef = useRef<HTMLVideoElement>(null)
