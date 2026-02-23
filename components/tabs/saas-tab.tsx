@@ -536,7 +536,7 @@ export function SaasTab() {
             <div className="h-56">
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
-                  <Pie data={sectorData} cx="50%" cy="50%" innerRadius={35} outerRadius={60} paddingAngle={3} dataKey="value" label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`} fontSize={9}>
+                  <Pie data={sectorData} cx="50%" cy="50%" innerRadius={35} outerRadius={60} paddingAngle={3} dataKey="value" label={({ x, y, name, percent, textAnchor }) => (<text x={x} y={y} textAnchor={textAnchor} dominantBaseline="central" style={{ fontSize: "7px", fill: "#4a5568", fontWeight: 500 }}>{`${name} ${(percent * 100).toFixed(0)}%`}</text>)}>
                     {sectorData.map((_, index) => (
                       <Cell key={`sec-${index}`} fill={COLORS[index % COLORS.length]} />
                     ))}
