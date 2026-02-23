@@ -41,12 +41,22 @@ const genericItems = [
   { material: "plastic", shape: "bottle", group: "recyclable", name_vi: "Vật phẩm nhựa", name_en: "Plastic Item", tip_vi: "Rửa sạch và tái chế đúng quy định", tip_en: "Rinse and recycle according to guidelines" },
 ];
 
+// THÔNG SỐ CO2 PHỤC VỤ BÁO CÁO (gCO2/g)
 const co2Impact: Record<MaterialType, number> = { plastic: 82, metal: 170, paper: 17, glass: 86, organic: 5 };
+
+// CÂU ĐỘNG LỰC SAU KHI QUÉT
+const slogans = [
+  "Mỗi hành động nhỏ, một hành tinh xanh! 🌱",
+  "Bạn vừa giúp Trái Đất bớt đi gánh nặng đấy! ✨",
+  "Tuyệt vời! Thêm một món rác được đặt đúng chỗ. 🌎",
+  "Cảm ơn vì đã cùng EcoScan bảo vệ tương lai! 💚",
+  "Phân loại rác là hành động của người văn minh! 🏆"
+];
 
 function simulateDetection(totalScans: number) {
   const rand = Math.random();
   
-  // 75% trường hợp: Nhận diện đúng thương hiệu (Ưu tiên theo kịch bản demo)
+  // 75% trường hợp: Nhận diện đúng thương hiệu (Ưu tiên theo kịch bản demo: Chai -> Hộp)
   if (rand < 0.75) {
     const isEven = totalScans % 2 === 0;
     const item = isEven ? knownBrands[0] : knownBrands[2];
@@ -83,7 +93,7 @@ export function ScanTab() {
   const [earnedPts, setEarnedPts] = useState(0);
   const [cameraReady, setCameraReady] = useState(false);
   const [capturedPhoto, setCapturedPhoto] = useState<string | null>(null);
-  const [disposalPhoto, setDisposalPhoto] = useState<string | null>(null);
+  const [slogan, setSlogan] = useState("");
 
   useEffect(() => {
     async function initCamera() {
@@ -144,6 +154,7 @@ export function ScanTab() {
           clearInterval(interval);
           addPoints(earnedPts); addScan();
           addScanEntry({ item_vi: detectedItem.name_vi, item_en: detectedItem.name_en, points: earnedPts, txHash: txHash.slice(0, 10) });
+          setSlogan(slogans[Math.floor(Math.random() * slogans.length)]);
           setPhase("done");
           return 100;
         }
@@ -176,12 +187,12 @@ export function ScanTab() {
       )}
 
       {phase === "analyzing" && (
-        <div className="w-full space-y-4">
+        <div className="w-full space-y-4 text-center">
           <div className="relative aspect-square rounded-2xl overflow-hidden border-2 border-primary shadow-xl">
-            <img src={capturedPhoto!} className="w-full h-full object-cover opacity-50" alt="Captured" />
+            <img src={capturedPhoto!} className="w-full h-full object-cover opacity-60" alt="Captured" />
             <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/10">
               <RefreshCw className="w-10 h-10 text-primary animate-spin mb-2" />
-              <p className="text-primary font-bold drop-shadow-sm">AI Analyzing {scanProgress}%</p>
+              <p className="text-primary font-bold drop-shadow-sm">AI Phân tích... {scanProgress}%</p>
             </div>
           </div>
         </div>
@@ -209,11 +220,15 @@ export function ScanTab() {
             <p className="flex justify-between"><b>Thương hiệu:</b> <span className={detectedItem.isKnownBrand ? "text-foreground" : "italic text-muted-foreground"}>{detectedItem.brand}</span></p>
           </div>
 
-          {/* LEARNING LOOP UI */}
+          <div className="p-3 bg-primary/5 rounded-xl border border-primary/20">
+            <p className="text-[10px] font-bold text-primary flex items-center gap-1 mb-1 uppercase"><Lightbulb className="w-3 h-3"/> Cách xử lý:</p>
+            <p className="text-xs text-foreground leading-relaxed">{lang === "vi" ? detectedItem.tip_vi : detectedItem.tip_en}</p>
+          </div>
+
           {detectedItem.needsFeedback && (
             <div className="p-3 bg-amber-50 border border-amber-200 rounded-xl space-y-2">
               <p className="text-[10px] font-bold text-amber-700 uppercase flex items-center gap-1"><HelpCircle className="w-3 h-3"/> AI đang học hỏi:</p>
-              <p className="text-xs text-amber-800 leading-tight">Mẫu rác này lạ quá, bạn xác nhận vật liệu giúp AI nhé?</p>
+              <p className="text-xs text-amber-800 leading-tight">Bạn xác nhận vật liệu này để giúp AI chính xác hơn nhé?</p>
               <div className="flex gap-1.5">
                 {["Nhựa", "Giấy", "Kim loại"].map(m => (
                   <button key={m} onClick={() => alert("Cảm ơn! AI đã ghi nhớ.")} className="px-2 py-1 bg-white border border-amber-300 rounded text-[9px] hover:bg-amber-100 transition-colors">{m}</button>
@@ -222,14 +237,25 @@ export function ScanTab() {
             </div>
           )}
 
-          {/* DISPOSAL TIP */}
-          <div className="p-3 bg-primary/5 rounded-xl border border-primary/20">
-            <p className="text-[10px] font-bold text-primary flex items-center gap-1 mb-1 uppercase"><Lightbulb className="w-3 h-3"/> Cách xử lý:</p>
-            <p className="text-xs text-foreground leading-relaxed">{lang === "vi" ? detectedItem.tip_vi : detectedItem.tip_en}</p>
+          {/* CHỈ SỐ CO2 - HIỆN CUỐI CÙNG TRƯỚC NÚT XÁC MINH */}
+          <div className="flex items-center justify-between p-3 bg-green-600 rounded-xl text-white shadow-md">
+            <div className="flex items-center gap-2">
+              <Leaf className="w-5 h-5 text-green-200" />
+              <div>
+                <p className="text-[10px] font-bold uppercase opacity-80">Chỉ số xanh</p>
+                <p className="text-[9px] opacity-90">Giảm phát thải CO2e</p>
+              </div>
+            </div>
+            <div className="text-right">
+              <span className="text-xl font-black">
+                -{(co2Impact[detectedItem.material as MaterialType] * 0.15).toFixed(1)}
+              </span>
+              <span className="text-[10px] font-bold ml-1 text-green-200">g</span>
+            </div>
           </div>
 
           <button onClick={() => setPhase("verifying")} className="w-full py-3.5 bg-primary text-white rounded-xl font-bold flex items-center justify-center gap-2 shadow-lg active:scale-95 transition-transform">
-            <ShieldCheck className="w-5 h-5" /> Xác minh xử lý
+            <ShieldCheck className="w-5 h-5" /> Xác minh & Nhận điểm
           </button>
         </div>
       )}
@@ -243,7 +269,7 @@ export function ScanTab() {
               <video ref={videoRef} className="w-full h-full object-cover" autoPlay playsInline muted />
               <div className="absolute inset-0 border-2 border-dashed border-white/20 m-10 rounded-xl pointer-events-none" />
            </div>
-           <button onClick={() => { setDisposalPhoto(captureFrame()); setPhase("syncing"); }} className="w-full py-4 bg-primary text-white rounded-xl font-bold shadow-xl">
+           <button onClick={() => setPhase("syncing")} className="w-full py-4 bg-primary text-white rounded-xl font-bold shadow-xl">
               Chụp bằng chứng xử lý
            </button>
         </div>
@@ -254,7 +280,7 @@ export function ScanTab() {
            <CloudUpload className="w-12 h-12 text-primary mx-auto animate-bounce" />
            <div>
              <p className="font-bold text-primary">Đang đồng bộ Blockchain... {syncProgress}%</p>
-             <p className="text-[10px] text-muted-foreground mt-1">Đảm bảo tính minh bạch dữ liệu EPR</p>
+             <p className="text-[10px] text-muted-foreground mt-1 uppercase tracking-tight">Xác thực minh bạch dữ liệu EPR</p>
            </div>
            <div className="w-full h-2 bg-secondary rounded-full overflow-hidden">
               <div className="h-full bg-primary transition-all duration-300" style={{ width: `${syncProgress}%` }} />
@@ -267,14 +293,19 @@ export function ScanTab() {
            <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto text-primary">
               <CheckCircle2 className="w-10 h-10" />
            </div>
-           <h3 className="font-bold text-xl text-primary">Phân loại thành công!</h3>
+           <h3 className="font-bold text-xl text-primary">Thành công!</h3>
+           
+           <p className="text-sm italic text-muted-foreground px-4 leading-relaxed">
+             "{slogan}"
+           </p>
+
            <div className="p-4 bg-primary/10 rounded-xl text-3xl font-black text-primary">+{earnedPts} Điểm</div>
            <p className="text-[10px] text-muted-foreground font-mono bg-muted p-2 rounded break-all border">{txHash}</p>
            <button onClick={resetScan} className="w-full py-3 bg-primary text-white rounded-xl font-bold shadow-md hover:opacity-90 active:scale-95 transition-all">Tiếp tục quét rác</button>
         </div>
       )}
       
-      <p className="text-[9px] text-muted-foreground text-center mt-4 uppercase tracking-widest opacity-50 italic">Powered by EcoScan AI Engine</p>
+      <p className="text-[9px] text-muted-foreground text-center mt-4 uppercase tracking-widest opacity-50 italic font-medium">EcoScan • Circular Economy AI Engine</p>
     </div>
   );
 }
