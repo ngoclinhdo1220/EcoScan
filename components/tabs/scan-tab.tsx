@@ -1,6 +1,6 @@
 "use client"
 
-import { useI18n } from "@/lib/i18n"
+import * as tflite from '@tensorflow/tfjs-tflite';
 import { usePoints } from "@/lib/points-context"
 import { useState, useEffect, useCallback, useRef } from "react"
 import {
@@ -287,7 +287,24 @@ function generateTxHash() {
   return hash
 }
 
-export function ScanTab() {
+export function ScanTab() {export function ScanTab() {
+  const { lang, t } = useI18n() // Dòng có sẵn của bạn
+  
+  // DÁN ĐOẠN NÀY VÀO ĐÂY:
+  useEffect(() => {
+    async function loadModel() {
+      try {
+        await tflite.loadTFLiteModel('/best_float32 (1).tflite');
+        console.log("AI Model Ready!");
+      } catch (e) {
+        console.log("Running in simulation mode");
+      }
+    }
+    loadModel();
+  }, []);
+
+  const { addPoints, addScan, addScanEntry, totalScans } = usePoints() // Dòng có sẵn tiếp theo
+  // ... các dòng code còn lại
   const { lang, t } = useI18n()
   const { addPoints, addScan, addScanEntry, totalScans } = usePoints()
   const videoRef = useRef<HTMLVideoElement>(null)
