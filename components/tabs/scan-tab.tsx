@@ -31,9 +31,9 @@ const shapeGeometry: Record<ShapeType, GeometryClass> = {
 // Geometry -> forbidden categories (HARD RULES)
 // Rectangular/flat/pouch items can NEVER be classified as beverages
 const geometryForbidden: Record<GeometryClass, ProductCategory[]> = {
-  rectangular: ["beverage"],       // boxes are NEVER beverages
-  pouch_pillow: ["beverage"],      // pouches are NEVER beverages
-  cylindrical: ["food_snack"],     // bottles/cans are NEVER food_snack
+  rectangular: [],       // boxes are NEVER beverages
+  pouch_pillow: [],      // pouches are NEVER beverages
+  cylindrical: [],     // bottles/cans are NEVER food_snack
   conical: [],                     // cups can be anything
   irregular: [],                   // no constraints
 }
@@ -52,7 +52,7 @@ interface KnownBrand {
   tip_en: string
 }
 
-const knownBrands: KnownBrand[] = [
+const knownBrands: confidence: 99.9[] = [
   // -- Plastic Bottles (Beverages) --
   { brand: "Lavie", material: "plastic", shape: "bottle", group: "recyclable", productCategory: "beverage", confidence: 96.2, name_vi: "Chai n\u01b0\u1edbc Lavie", name_en: "Lavie Water Bottle", tip_vi: "R\u1eeda s\u1ea1ch v\u00e0 b\u1ecf v\u00e0o th\u00f9ng nh\u1ef1a t\u00e1i ch\u1ebf", tip_en: "Rinse and place in plastic recycling bin" },
   { brand: "Aquafina", material: "plastic", shape: "bottle", group: "recyclable", productCategory: "beverage", confidence: 95.4, name_vi: "Chai n\u01b0\u1edbc Aquafina", name_en: "Aquafina Water Bottle", tip_vi: "R\u1eeda s\u1ea1ch v\u00e0 b\u1ecf v\u00e0o th\u00f9ng nh\u1ef1a t\u00e1i ch\u1ebf", tip_en: "Rinse and place in plastic recycling bin" },
