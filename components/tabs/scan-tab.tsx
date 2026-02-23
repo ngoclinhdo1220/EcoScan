@@ -212,22 +212,26 @@ export function ScanTab() {
       {phase === "syncing" && (
         <div className="w-full p-6 bg-card border rounded-2xl text-center space-y-4">
            <CloudUpload className="w-12 h-12 text-primary mx-auto animate-bounce" />
-           <p className="font-bold">Đang đồng bộ dữ liệu... {syncProgress}%</p>
+           <p className="font-bold text-primary">Đang đồng bộ dữ liệu... {syncProgress}%</p>
            <div className="w-full h-2 bg-secondary rounded-full overflow-hidden">
-              <div className="h-full bg-primary" style={{ width: `${syncProgress}%` }} />
+              <div className="h-full bg-primary transition-all" style={{ width: `${syncProgress}%` }} />
            </div>
         </div>
       )}
 
       {phase === "done" && (
-        <div className="w-full p-6 bg-card border-2 border-primary/50 rounded-2xl text-center space-y-4">
+        <div className="w-full p-6 bg-card border-2 border-primary/50 rounded-2xl text-center space-y-4 animate-in zoom-in-95">
            <CheckCircle2 className="w-12 h-12 text-primary mx-auto" />
-           <h3 className="font-bold text-lg">Hoàn tất!</h3>
+           <h3 className="font-bold text-lg text-foreground">Hoàn tất!</h3>
            <div className="p-4 bg-primary/10 rounded-xl text-2xl font-bold text-primary">+{earnedPts} Điểm</div>
-           <p className="text-xs text-muted-foreground font-mono truncate">{txHash}</p>
-           <button onClick={resetScan} className="w-full py-3 bg-primary text-white rounded-xl font-bold">Quét tiếp</button>
+           <p className="text-[10px] text-muted-foreground font-mono truncate bg-muted p-2 rounded">{txHash}</p>
+           <button onClick={resetScan} className="w-full py-3 bg-primary text-white rounded-xl font-bold shadow-md active:scale-95 transition-transform">
+             Tiếp tục quét
+           </button>
         </div>
       )}
+      
+      <p className="text-[9px] text-muted-foreground text-center mt-4">Powered by EcoScan AI Engine</p>
     </div>
   );
 }
