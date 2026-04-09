@@ -13,11 +13,11 @@ function fmtNum(n: number) {
 }
 
 const leaderboard = [
-  { name: "Minh Anh", points: 2850, avatar: "MA" },
-  { name: "Thu Trang", points: 2340, avatar: "TT" },
-  { name: "Linh \u0110\u1ed7", points: 1920, avatar: "L\u0110" },
-  { name: "Duc Huy", points: 1750, avatar: "DH" },
-  { name: "Ngoc Mai", points: 1520, avatar: "NM" },
+  { name: "Ngoc Phuong", points: 2406, avatar: "NP" },
+  { name: "Thu Trang", points: 9900, avatar: "TT" },
+  { name: "Linh \u0110\u1ed7", points: 2012, avatar: "L\u0110" },
+  { name: "Minh Thu", points: 2812, avatar: "MT" },
+  { name: "Thu Ha", points: 1406, avatar: "TH" },
 ]
 
 function formatTimeAgo(ts: number, lang: "vi" | "en") {
